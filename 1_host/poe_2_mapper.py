@@ -628,6 +628,7 @@ class Mapper2(PoeBotComponent):
 
   def run(self, nested=False):
     poe_bot = self.poe_bot
+    poe_bot.mover.default_continue_function = poe_bot.combat_module.build.usualRoutine
     in_instance = "Hideout" not in poe_bot.game_data.area_raw_name  # and not "_town_" in poe_bot.game_data.area_raw_name
     print(f"[Mapper2.run] current instance: {poe_bot.game_data.area_raw_name} in_instance {in_instance}")
     if self.cache.stage == 0:
