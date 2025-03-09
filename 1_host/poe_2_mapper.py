@@ -634,8 +634,10 @@ class Mapper2(PoeBotComponent):
     if self.cache.stage == 0:
       # self.checkIfSessionEnded()
       self.doPreparations()
+      poe_bot.mover.default_continue_function = poe_bot.combat_module.build.usualRoutine
     if self.cache.stage == 1:
       self.activateMap()
+      poe_bot.mover.default_continue_function = poe_bot.combat_module.build.usualRoutine
     if self.cache.stage == 2:
       # #TODO part below is somewhere here
       # time.sleep(random.uniform(0.8, 1.6))
