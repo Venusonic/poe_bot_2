@@ -26,7 +26,7 @@ poe_bot: poe_bot_class
 
 
 default_config = {
-  "REMOTE_IP": "172.29.137.117",  # z2
+  "REMOTE_IP": "192.168.72.253",  # z2
   "unique_id": "poe_2_test",
   "force_reset_temp": False,
 }
@@ -199,7 +199,7 @@ while True:
       poe_bot.mover.enterTransition(portals_with_similar_area_name)
     else:
       can_teleport = checkIfCanTeleportToPartyMember(party_member_to_follow)
-      if can_teleport is not False:
+      if can_teleport is not True:
         teleport_button = getTeleportButtonArea(poe_bot, party_member_to_follow)
         teleport_button.click()
         time.sleep(random.uniform(0.05, 0.15))
