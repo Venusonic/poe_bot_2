@@ -196,6 +196,15 @@ while True:
     member_to_follow_loc = str(member_to_follow_loc).strip() if member_to_follow_loc else "UNKNOWN"
     current_area = str(current_area).strip() if current_area else "UNKNOWN"
 
+    transitions_and_portals = []
+    transitions_and_portals.extend(poe_bot.game_data.entities.town_portals)
+    transitions_and_portals.extend(poe_bot.game_data.entities.area_transitions)
+
+    portals_with_similar_area_name = next((e for e in transitions_and_portals if e.render_name == member_to_follow_loc), None)
+    if portals_with_similar_area_name:
+      poe_bot.mover.goToEntitysPoint(portals_with_similar_area_name, release_mouse_on_end=True)
+      poe_bot.mover.enterTransition(portals_with_similar_area_name)
+
     # Vérification de la présence physique de l'entité
     entity_in_same_area = any(
         e.id == id_to_follow and e.distance_to_player < 100 
