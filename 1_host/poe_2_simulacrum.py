@@ -29,7 +29,7 @@ notebook_dev = False
 
 
 default_config = {
-  "REMOTE_IP": "192.168.72.253",  # z2
+  "REMOTE_IP": "192.168.76.11",  # z2
   "unique_id": "poe_2_test",
   "force_reset_temp": False,
 }
@@ -42,8 +42,8 @@ try:
   print("successfully parsed cli config")
   print(f"parsed_config: {parsed_config}")
 except:
-  print("cannot parse config from cli, using default\dev one")
-  notebook_dev = True
+  print("cannot parse config from cli, using default\\dev one")
+  notebook_dev = False
   parsed_config = default_config
 
 config = {}
@@ -78,26 +78,28 @@ from utils.utils import createLineIteratorWithValues
 # In[ ]:
 
 
-from utils.combat import BarrierInvocationInfernalist, InfernalistZoomancer
+#from utils.combat import BarrierInvocationInfernalist, InfernalistZoomancer
 
-if "demon_transformation" in poe_bot.game_data.skills.internal_names:
-  print("barrier build")
-  poe_bot.combat_module.build = BarrierInvocationInfernalist(poe_bot)
+#if "demon_transformation" in poe_bot.game_data.skills.internal_names:
+#  print("barrier build")
+#  poe_bot.combat_module.build = BarrierInvocationInfernalist(poe_bot)
 
-else:
-  print("minions build")
-  poe_bot.combat_module.build = InfernalistZoomancer(poe_bot, can_kite=False)
+#else:
+#  print("minions build")
+#  poe_bot.combat_module.build = InfernalistZoomancer(poe_bot, can_kite=False)
   
-min_stacks_for_wave_11_plus = 60
-reset_form_before_waves = [9]
-max_stacks_for_wave_11_plus = 400
+#min_stacks_for_wave_11_plus = 60
+#reset_form_before_waves = [9]
+#max_stacks_for_wave_11_plus = 400
 
 
 # In[7]:
 
 from utils.combat import TemporalisBlinker
-poe_bot.combat_module.build = TemporalisBlinker(poe_bot)
 
+print("TemporalisBlinker build")
+
+poe_bot.combat_module.build = TemporalisBlinker(poe_bot)
 # default mover function
 poe_bot.mover.default_continue_function = poe_bot.combat_module.build.usualRoutine
 
@@ -381,8 +383,11 @@ class Simulacrum2:
   def activateMap(self):
     poe_bot.mover.default_continue_function = lambda _: False
     poe_bot.ui.map_device.open()
+    poe_bot.ui.map_device.update()
     time.sleep(1)
     poe_bot.ui.map_device.open()
+    poe_bot.ui.map_device.update()
+    # import pdb; pdb.set_trace()
 
     ziggurat_map = next((m for m in poe_bot.ui.map_device.all_maps if m.name == "The Ziggurat Refuge"), None)
     while ziggurat_map is None:
@@ -397,8 +402,10 @@ class Simulacrum2:
       _i += 1
       if _i > 10:
         poe_bot.raiseLongSleepException("couldnt get ziggurat in roi while clicking on its button")
-      poe_bot.ui.map_device.ziggurat_button.click()
+      ziggurat_visible = poe_bot.ui.map_device.ziggurat_button
+      ziggurat_visible.click()
       time.sleep(2)
+      poe_bot.refreshAll() 
       poe_bot.ui.map_device.update()
       ziggurat_map = next((m for m in poe_bot.ui.map_device.all_maps if m.name == "The Ziggurat Refuge"), None)
       if ziggurat_map is None:
