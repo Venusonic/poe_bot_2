@@ -155,7 +155,7 @@ while True:
 
   _i += 1
   if _i == refresh_area_frequency:
-    poe_bot.refreshAll()
+    
     poe_bot.game_data.terrain.getCurrentlyPassableArea()
     _i = 0
   else:
@@ -195,7 +195,24 @@ while True:
     # Nettoyage des valeurs
     member_to_follow_loc = str(member_to_follow_loc).strip() if member_to_follow_loc else "UNKNOWN"
     current_area = str(current_area).strip() if current_area else "UNKNOWN"
-
+    print(f"{member_to_follow_loc} member to follow location.")
+    
+    if current_area != member_to_follow_loc and member_to_follow_loc != "UNKNOWN":    
+        can_teleport = checkIfCanTeleportToPartyMember(party_member_to_follow)
+        if can_teleport:
+            teleport_button = getTeleportButtonArea(poe_bot, party_member_to_follow)
+            teleport_button.click()
+            print("Attempting to click on teleport button")
+            time.sleep(4)
+            time.sleep(random.uniform(0.05, 0.15))
+            accept_button_element = UiElement(poe_bot, Posx1x2y1y2(*[575, 635, 390, 400]))
+            accept_button_element.click()
+            time.sleep(random.uniform(0.05, 0.10))		
+            print("Can Teleport to member party")
+        else:
+            print(f"Déjà dans la même zone que {ign_to_follow}, pas de téléportation nécessaire")
+            continue  # Passer au prochain cycle sans téléporter
+      # check if leader's location can be transitioned via ui
     transitions_and_portals = []
     transitions_and_portals.extend(poe_bot.game_data.entities.town_portals)
     transitions_and_portals.extend(poe_bot.game_data.entities.area_transitions)
@@ -204,7 +221,7 @@ while True:
     if portals_with_similar_area_name:
       poe_bot.mover.goToEntitysPoint(portals_with_similar_area_name, release_mouse_on_end=True)
       poe_bot.mover.enterTransition(portals_with_similar_area_name)
-
+    
     # Vérification de la présence physique de l'entité
     entity_in_same_area = any(
         e.id == id_to_follow and e.distance_to_player < 100 
@@ -227,15 +244,14 @@ while True:
             
         print(f"Distance: {entity_to_follow.distance_to_player}m")
         
-        if entity_to_follow.distance_to_player > min_distance_to_follow:
-            print("Début suivi physique")
+        if entity_to_follow:
+          if entity_to_follow.distance_to_player > min_distance_to_follow:
             if entity_to_follow.isInRoi() and entity_to_follow.isInLineOfSight():
-                poe_bot.mover.move(*entity_to_follow.grid_position.toList())
+              poe_bot.mover.move(*entity_to_follow.grid_position.toList())
             else:
-                poe_bot.mover.goToEntity(entity_to_follow, min_distance=min_distance_to_follow)
-        else:
-            print("Distance acceptable - Maintien position")
-            poe_bot.mover.stopMoving()
+              poe_bot.mover.goToEntity(entity_to_follow, min_distance=min_distance_to_follow)
+          else:
+             poe_bot.mover.stopMoving()
             
         continue  # Skip toute la logique de téléportation
 
@@ -248,6 +264,7 @@ while True:
                 accept_button_element = UiElement(poe_bot, Posx1x2y1y2(*[575, 635, 390, 400]))
                 accept_button_element.click()
                 time.sleep(random.uniform(0.05, 0.10))
+                print("Can Teleport to member party")
             else:
                 print(f"Déjà dans la même zone que {ign_to_follow}, pas de téléportation nécessaire")
                 continue  # Passer au prochain cycle sans téléporter
