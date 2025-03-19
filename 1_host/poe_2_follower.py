@@ -197,6 +197,15 @@ while True:
     current_area = str(current_area).strip() if current_area else "UNKNOWN"
     print(f"{member_to_follow_loc} member to follow location.")
     
+    transitions_and_portals = []
+    transitions_and_portals.extend(poe_bot.game_data.entities.town_portals)
+    transitions_and_portals.extend(poe_bot.game_data.entities.area_transitions)
+
+    portals_with_similar_area_name = next((e for e in transitions_and_portals if e.render_name == member_to_follow_loc), None)
+    if portals_with_similar_area_name:
+      poe_bot.mover.goToEntitysPoint(portals_with_similar_area_name, release_mouse_on_end=True)
+      poe_bot.mover.enterTransition(portals_with_similar_area_name)    
+    
     if current_area != member_to_follow_loc and member_to_follow_loc != "UNKNOWN":    
         can_teleport = checkIfCanTeleportToPartyMember(party_member_to_follow)
         if can_teleport:
@@ -213,14 +222,6 @@ while True:
             print(f"Déjà dans la même zone que {ign_to_follow}, pas de téléportation nécessaire")
             continue  # Passer au prochain cycle sans téléporter
       # check if leader's location can be transitioned via ui
-    transitions_and_portals = []
-    transitions_and_portals.extend(poe_bot.game_data.entities.town_portals)
-    transitions_and_portals.extend(poe_bot.game_data.entities.area_transitions)
-
-    portals_with_similar_area_name = next((e for e in transitions_and_portals if e.render_name == member_to_follow_loc), None)
-    if portals_with_similar_area_name:
-      poe_bot.mover.goToEntitysPoint(portals_with_similar_area_name, release_mouse_on_end=True)
-      poe_bot.mover.enterTransition(portals_with_similar_area_name)
     
     # Vérification de la présence physique de l'entité
     entity_in_same_area = any(
